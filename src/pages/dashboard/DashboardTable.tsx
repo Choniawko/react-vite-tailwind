@@ -1,59 +1,48 @@
-import { Table } from "@ui/table/Table";
-import { useMemo } from "react";
-import { Column } from "react-table";
+import { Table, Pagination, SearchField } from "@ui/table";
 import { Opportunity } from "@api-services/dashboard/opportunity";
 import { format } from "date-fns";
+import { createColumnHelper } from "@tanstack/react-table";
+import { TableProvider } from "../../shared/ui/table/TableContext";
 
 export const DashboardTable = ({
   opportunities,
 }: {
   opportunities: Opportunity[];
 }) => {
-  const data = useMemo(
-    () =>
-      opportunities?.map((opp) =>
-        Object.values(opp).reduce(
-          (acc, curr, i) => ({
-            ...acc,
-            [`col${i + 1}`]: isNaN(Date.parse(curr))
-              ? curr
-              : format(new Date(curr), "MM/dd/yyyy"),
-          }),
-          {}
-        )
-      ),
-    []
-  );
+  const columnHelper = createColumnHelper<Opportunity>();
 
-  const columns = useMemo(
-    () =>
-      [
-        {
-          Header: "Opp ID",
-          accessor: "col1",
-        },
-        {
-          Header: "Data Placed",
-          accessor: "col2",
-        },
-        {
-          Header: "Data submitted",
-          accessor: "col3",
-        },
-        {
-          Header: "Farmer",
-          accessor: "col4",
-        },
-        {
-          Header: "Delivery Address",
-          accessor: "col5",
-        },
-        {
-          Header: "Total Price",
-          accessor: "col6",
-        },
-      ] as Column[],
-    []
+  const columns = [
+    columnHelper.accessor("oppId", {
+      header: () => "Opp ID",
+      cell: (info) => info.renderValue(),
+    }),
+    columnHelper.accessor("datePlaced", {
+      header: () => "Date Placed",
+      cell: (info) => format(new Date(info.getValue()), "MM/dd/yyyy"),
+    }),
+    columnHelper.accessor("dateSubmitted", {
+      header: () => "Date Submitted",
+      cell: (info) => format(new Date(info.getValue()), "MM/dd/yyyy"),
+    }),
+    columnHelper.accessor("farmerName", {
+      header: () => "Farmer",
+      cell: (info) => info.renderValue(),
+    }),
+    columnHelper.accessor("shipToAddress", {
+      header: () => "Ship Address",
+      cell: (info) => info.renderValue(),
+    }),
+    columnHelper.accessor("totalCost", {
+      header: () => "Total Cost",
+      cell: (info) => info.renderValue(),
+    }),
+  ];
+
+  return (
+    <TableProvider data={opportunities} {...{ columns }}>
+      <SearchField />
+      <Table />
+      <Pagination />
+    </TableProvider>
   );
-  return <Table {...{ data, columns }} />;
 };

@@ -1,52 +1,57 @@
-export const Pagination = ({
-  gotoPage,
-  previousPage,
-  nextPage,
-  pageCount,
-  canPreviousPage,
-  canNextPage,
-  pageIndex,
-  pageOptions,
-  pageSize,
-  setPageSize,
-}: any) => {
+import { useTableContext } from "./TableContext";
+
+export const Pagination = () => {
+  const table = useTableContext();
   return (
     <div className="">
       <div className="">
-        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+        <button
+          onClick={() => table.setPageIndex(0)}
+          disabled={!table.getCanPreviousPage()}
+        >
           {"<<"}
         </button>{" "}
-        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+        <button
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
           {"<"}
         </button>{" "}
-        <button onClick={() => nextPage()} disabled={!canNextPage}>
+        <button
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
           {">"}
         </button>{" "}
-        <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+        <button
+          onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+          disabled={!table.getCanNextPage()}
+        >
           {">>"}
         </button>{" "}
         <span>
           Page{" "}
           <strong>
-            {pageIndex + 1} of {pageOptions.length}
-          </strong>{" "}
+            {table.getState().pagination.pageIndex + 1} of{" "}
+            {table.getPageCount()}
+          </strong>
         </span>
         <span>
           | Go to page:{" "}
           <input
             type="number"
-            defaultValue={pageIndex + 1}
+            defaultValue={table.getState().pagination.pageIndex + 1}
             onChange={(e) => {
               const page = e.target.value ? Number(e.target.value) - 1 : 0;
-              gotoPage(page);
+              table.setPageIndex(page);
             }}
             style={{ width: "100px" }}
           />
         </span>{" "}
         <select
-          value={pageSize}
+          value={table.getState().pagination.pageSize}
           onChange={(e) => {
-            setPageSize(Number(e.target.value));
+            table.setPageSize(Number(e.target.value));
           }}
         >
           {[10, 20, 30, 40, 50].map((pageSize) => (

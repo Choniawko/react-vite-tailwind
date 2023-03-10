@@ -4,5 +4,7 @@ export interface Opportunity {
   farmerName: string;
   shipToAddress: string;
   totalCost: string;
-  dataSubmitted: Date;
+  dateSubmitted: Date;
+  deliveryAddress: string;
+  totalPrice: string;
 }

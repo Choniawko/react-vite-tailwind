@@ -24,7 +24,7 @@ function getRandomFromRange(min: number, max: number) {
 function newOpportunity() {
   return {
     oppId: `#${getRandomFromRange(1000, 9999)}`,
-    dataSubmitted: randomDate(new Date(2012, 0, 1), new Date()),
+    dateSubmitted: randomDate(new Date(2012, 0, 1), new Date()),
     datePlaced: randomDate(new Date(2012, 0, 1), new Date()),
     farmerName: faker.name.fullName(),
     shipToAddress: `${faker.address.streetAddress()}, ${faker.address.zipCode()}`,
